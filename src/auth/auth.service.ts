@@ -1,12 +1,14 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
-
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
   async register(email: string, password: string) {
     const candidate = await this.prisma.user.findUnique({ where: { email } });
     if (candidate) {
@@ -28,7 +30,7 @@ export class AuthService {
     return user;
   }
 
-  async login(email: string, password: string) {
+  async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
       throw new HttpException('user not found with inputted email', 404);
@@ -38,6 +40,8 @@ export class AuthService {
       throw new HttpException('password does not match', 404);
     }
 
-    return jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
+    const { password: _password, ...rest } = user;
+    const payload = this.jwtService.sign(rest);
+    return payload;
   }
 }
