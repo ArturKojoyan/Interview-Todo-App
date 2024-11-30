@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
 
@@ -60,9 +62,12 @@ describe('TodosController', () => {
       controllers: [TodosController],
       providers: [TodosService],
     })
-      // overriding todoService with mockTodoService
-      .overrideProvider(TodosService)
+      .overrideProvider(TodosService) // overriding todoService
       .useValue(mockTodoService)
+      .overrideGuard(AuthGuard('jwt')) // overriding JwtAuthGuard
+      .useValue({
+        canActivate: jest.fn(() => true), // Mocking success authorization
+      })
       .compile();
 
     controller = module.get<TodosController>(TodosController);
@@ -75,11 +80,11 @@ describe('TodosController', () => {
     mockTodoService.deleteTodo.mockClear();
   });
 
-  it('should be defined', () => {
+  it('todo controller should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create new todo', async () => {
+  it('create: should create new todo', async () => {
     const req = {
       user: { id: 1 },
     };
@@ -98,7 +103,7 @@ describe('TodosController', () => {
     );
   });
 
-  it('should get specific user todos', async () => {
+  it('list: should get specific user todos', async () => {
     const req = {
       user: { id: 1 },
     };
@@ -116,7 +121,7 @@ describe('TodosController', () => {
     expect(mockTodoService.listTodos).toHaveBeenCalledWith(1);
   });
 
-  it('should get todo when id is 1', async () => {
+  it('findOne: should get todo when id is 1', async () => {
     const req = {
       user: { id: 1 },
     };
@@ -132,13 +137,18 @@ describe('TodosController', () => {
     expect(mockTodoService.findOneTodo).toHaveBeenCalledWith(1, dto.userId);
   });
 
-  // it('should throw error when id is 10', async () => {
-  //   expect(await controller.findOne(10)).rejects.toThrow(NotFoundException);
+  it('findOne: should throw error when todo id is 10', async () => {
+    const req = {
+      user: { id: 1 },
+    };
+    await expect(controller.findOne(10, req)).rejects.toThrow(
+      NotFoundException,
+    );
 
-  //   expect(mockTodoService.findOneTodo).toHaveBeenCalledTimes(1);
-  // });
+    expect(mockTodoService.findOneTodo).toHaveBeenCalledTimes(1);
+  });
 
-  it('should update todo correctly', async () => {
+  it('update: should update todo correctly when id is not 10', async () => {
     const req = {
       user: { id: 1 },
     };
@@ -167,7 +177,25 @@ describe('TodosController', () => {
     });
   });
 
-  it('should delete todo correctly', async () => {
+  it('update: should throw error when todo id is 10', async () => {
+    const req = {
+      user: { id: 1 },
+    };
+    const dto = {
+      id: 10,
+      title: 'new title',
+      completed: true,
+      userId: expect.any(Number),
+    };
+    await expect(controller.update(10, dto, req)).rejects.toThrow(
+      NotFoundException,
+    );
+
+    expect(mockTodoService.findOneTodo).toHaveBeenCalledTimes(1);
+    expect(mockTodoService.updateTodo).toHaveBeenCalledTimes(0);
+  });
+
+  it('delete: should delete todo correctly when id is not 10', async () => {
     const req = {
       user: { id: 1 },
     };
@@ -182,5 +210,16 @@ describe('TodosController', () => {
     expect(mockTodoService.findOneTodo).toHaveBeenCalled();
     expect(mockTodoService.deleteTodo).toHaveBeenCalledTimes(1);
     expect(mockTodoService.deleteTodo).toHaveBeenCalledWith(dto.id);
+  });
+
+  it('delete: should throw error when todo id is 10', async () => {
+    const req = {
+      user: { id: 1 },
+    };
+
+    await expect(controller.delete(10, req)).rejects.toThrow(NotFoundException);
+
+    expect(mockTodoService.findOneTodo).toHaveBeenCalledTimes(1);
+    expect(mockTodoService.deleteTodo).toHaveBeenCalledTimes(0);
   });
 });

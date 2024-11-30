@@ -11,7 +11,7 @@ import {
   ParseIntPipe,
   NotFoundException,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -30,7 +30,7 @@ export class TodosController {
   async findOne(@Param('id', ParseIntPipe) id, @Req() req) {
     const todo = await this.todosService.findOneTodo(id, req.user.id);
     if (!todo) {
-      throw new NotFoundException();
+      throw new NotFoundException('todo with provided id is not found');
     }
     return todo;
   }
