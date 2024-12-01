@@ -1,7 +1,12 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -12,32 +17,33 @@ export class AuthService {
   async register(email: string, password: string) {
     const candidate = await this.prisma.user.findUnique({ where: { email } });
     if (candidate) {
-      throw new HttpException('user with inputted email already exists', 404);
+      throw new BadRequestException('user with inputted email already exists');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!hashedPassword) {
-      throw new HttpException('password hashing failed', 400);
+      throw new InternalServerErrorException('password hashing failed');
     }
 
     const user = await this.prisma.user.create({
       data: { email, password: hashedPassword },
     });
     if (!user) {
-      throw new HttpException('failed to cerate a user', 400);
+      throw new InternalServerErrorException('failed to create a user');
     }
+    const { password: _password, ...rest } = user;
 
-    return user;
+    return rest;
   }
 
   async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user) {
-      throw new HttpException('user not found with inputted email', 404);
+      throw new NotFoundException('user not found with inputted email');
     }
 
     if (!(await bcrypt.compare(password, user.password))) {
-      throw new HttpException('password does not match', 404);
+      throw new BadRequestException('password does not match');
     }
 
     const { password: _password, ...rest } = user;

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from './../prisma/prisma.service';
 import { TodosService } from './todos.service';
 
-describe('TodosController', () => {
+describe('TodosService', () => {
   let service: TodosService;
 
   // mock prisma service
