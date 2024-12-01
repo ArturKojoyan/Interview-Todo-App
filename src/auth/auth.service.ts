@@ -15,13 +15,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async register(email: string, password: string) {
+    let hashedPassword: string;
     const candidate = await this.prisma.user.findUnique({ where: { email } });
     if (candidate) {
       throw new BadRequestException('user with inputted email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    if (!hashedPassword) {
+    try {
+      hashedPassword = await bcrypt.hash(password, 10);
+    } catch (error) {
       throw new InternalServerErrorException('password hashing failed');
     }
 
