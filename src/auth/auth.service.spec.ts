@@ -150,7 +150,11 @@ describe('AuthService', () => {
 
     // test the returned result of register
     const result = await service.register(dto.email, dto.password);
-    expect(result).toEqual({ id: dto.id, email: dto.email });
+    expect(result).toEqual({
+      id: dto.id,
+      email: dto.email,
+      password: dto.password,
+    });
 
     expect(mockPrisma.user.findUnique).toHaveBeenCalledTimes(1);
     expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({

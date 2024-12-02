@@ -33,9 +33,7 @@ export class AuthService {
     if (!user) {
       throw new InternalServerErrorException('failed to create a user');
     }
-    const { password: _password, ...rest } = user;
-
-    return rest;
+    return user;
   }
 
   async validateUser(email: string, password: string) {
@@ -48,6 +46,7 @@ export class AuthService {
       throw new BadRequestException('password does not match');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _password, ...rest } = user;
     const payload = this.jwtService.sign(rest);
     return payload;
