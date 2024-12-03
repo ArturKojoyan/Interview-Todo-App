@@ -86,7 +86,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "jwt_token",
+									"value": "jwt_token_secret",
 									"type": "string"
 								}
 							]
@@ -125,7 +125,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "jwt_token",
+									"value": "jwt_token_secret",
 									"type": "string"
 								}
 							]
@@ -156,7 +156,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "jwt_token",
+									"value": "jwt_token_secret",
 									"type": "string"
 								}
 							]
@@ -195,7 +195,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "jwt_token",
+									"value": "jwt_token_secret",
 									"type": "string"
 								}
 							]
@@ -235,7 +235,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "jwt_token",
+									"value": "jwt_token_secret",
 									"type": "string"
 								}
 							]
