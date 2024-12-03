@@ -54,10 +54,8 @@ describe('AuthController', () => {
   });
 
   it('login should work properly', async () => {
-    const req = {
-      user: { id: expect.any(String) },
-    };
+    const user = { id: '1' };
 
-    expect(await controller.login(req)).toEqual(req.user);
+    expect(await controller.login(user)).toEqual(user);
   });
 });
