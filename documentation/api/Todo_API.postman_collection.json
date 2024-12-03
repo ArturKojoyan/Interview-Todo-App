@@ -1,0 +1,273 @@
+{
+	"info": {
+		"_postman_id": "60f7367a-ea93-46c7-8dc7-e8be772b2c27",
+		"name": "Todo_API",
+		"description": "With this collection you can authenticate or make CRUD operations with todos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30939705"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test7@gmail.com\",\r\n    \"password\": 123456\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "With this API you can authorize providing correct credentials, API returns jwt acess token"
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"newgmail.com\",\r\n    \"password\": 123456\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "This API is creating a new user in db and returning it"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Todo",
+			"item": [
+				{
+					"name": "listTodos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0N0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkzNDMsImV4cCI6MTczMzI0MTE0M30.qgnxXYidJGvIu2bn0W76goY8o_X_r_6IAoBZqwTb4eA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/todos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"todos"
+							]
+						},
+						"description": "This API is resposible for returning one or many todos for current logged in user.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception"
+					},
+					"response": []
+				},
+				{
+					"name": "findOneTodo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOsiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3003/todos/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"todos",
+								"4"
+							]
+						},
+						"description": "This API is responsible for getting and returning Todo by id for current logged in user.  \nIn case were user has no permission to the Todo, API returns Forbidden exception.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception"
+					},
+					"response": []
+				},
+				{
+					"name": "createTodo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"new todo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/todos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"todos"
+							]
+						},
+						"description": "This API is responsible for createing new Todo with the givven body.title. API returns new created Todo data.\n\nBearer Token must be provided, otherwise this API returns Unauthorized exception"
+					},
+					"response": []
+				},
+				{
+					"name": "updateTodo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"updated-title\",\r\n    \"completed\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/todos/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"todos",
+								"4"
+							]
+						},
+						"description": "This API is responsible for updating one or more fields of Todo, in success scenario it returns the new updated Todo data.  \nIn case were user has no permission to the found by id Todo, API returns Forbidden exception.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception."
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTodo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3003/todos/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"todos",
+								"2"
+							]
+						},
+						"description": "This API is responsible for deleting Todo found by param.id In success scenario it returns the deleted Todo data.  \nIn case were user has no permission to the Todo, API returns Forbidden exception.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
