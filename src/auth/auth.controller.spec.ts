@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthModule } from './auth.module';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -13,6 +14,7 @@ describe('AuthController', () => {
   beforeEach(async () => {
     // mocking the module
     const module: TestingModule = await Test.createTestingModule({
+      imports: [AuthModule],
       controllers: [AuthController],
       providers: [AuthService],
     })
@@ -30,7 +32,11 @@ describe('AuthController', () => {
     mockAuthService.register.mockClear();
   });
 
-  it('todo controller should be defined', () => {
+  it('auth module should be defined', () => {
+    expect(module).toBeDefined();
+  });
+
+  it('auth controller should be defined', () => {
     expect(controller).toBeDefined();
   });
 
@@ -54,7 +60,11 @@ describe('AuthController', () => {
   });
 
   it('login should work properly', async () => {
-    const user = { id: '1' };
+    const user = {
+      id: 1,
+      email: expect.any(String),
+      password: expect.any(String),
+    };
 
     expect(await controller.login(user)).toEqual(user);
   });

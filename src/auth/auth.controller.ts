@@ -5,7 +5,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { User } from 'src/user.decorator';
+import { User, type UserType } from 'src/user.decorator';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalGuard } from './guards/local.guard';
@@ -23,7 +23,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(LocalGuard)
-  async login(@User() user) {
+  async login(@User() user: UserType) {
     return user;
   }
 }
