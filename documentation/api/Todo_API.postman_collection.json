@@ -36,7 +36,7 @@
 								"login"
 							]
 						},
-						"description": "With this API you can authorize providing correct credentials, API returns jwt acess token"
+						"description": "With this API you can authorize providing correct credentials, API returns jwt access token"
 					},
 					"response": []
 				},
@@ -86,7 +86,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0N0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkzNDMsImV4cCI6MTczMzI0MTE0M30.qgnxXYidJGvIu2bn0W76goY8o_X_r_6IAoBZqwTb4eA",
+									"value": "jwt_token",
 									"type": "string"
 								}
 							]
@@ -113,7 +113,7 @@
 								"todos"
 							]
 						},
-						"description": "This API is resposible for returning one or many todos for current logged in user.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception"
+						"description": "This API is responsible for returning one or many todos for current logged in user.  \nBearer Token must be provided, otherwise this API returns Unauthorized exception"
 					},
 					"response": []
 				},
@@ -125,7 +125,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOsiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"value": "jwt_token",
 									"type": "string"
 								}
 							]
@@ -156,7 +156,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"value": "jwt_token",
 									"type": "string"
 								}
 							]
@@ -183,7 +183,7 @@
 								"todos"
 							]
 						},
-						"description": "This API is responsible for createing new Todo with the givven body.title. API returns new created Todo data.\n\nBearer Token must be provided, otherwise this API returns Unauthorized exception"
+						"description": "This API is responsible for creating new Todo with the given body.title. API returns new created Todo data.\n\nBearer Token must be provided, otherwise this API returns Unauthorized exception"
 					},
 					"response": []
 				},
@@ -195,7 +195,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"value": "jwt_token",
 									"type": "string"
 								}
 							]
@@ -235,7 +235,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ0ZXN0M0BnbWFpbC5jb20iLCJpYXQiOjE3MzMyMzkyNzYsImV4cCI6MTczMzI0MTA3Nn0.huwOQo65XMCt1eMupw9W4vGZMrl5PNEKzXUXh9jatI4",
+									"value": "jwt_token",
 									"type": "string"
 								}
 							]
