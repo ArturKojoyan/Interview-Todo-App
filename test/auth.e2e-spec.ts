@@ -1,10 +1,12 @@
+import { AuthService } from './../src/auth/auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 import * as request from 'supertest';
+import * as bcrypt from 'bcrypt';
 import { AuthModule } from '../src/auth/auth.module';
 import { PrismaService } from '../src/prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
-import { AuthGuard } from '@nestjs/passport';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -15,8 +17,22 @@ describe('AuthController (e2e)', () => {
       create: jest.fn(),
     },
   };
+  const mockJwt = {
+    sign: jest.fn().mockImplementation((payload) => payload.toString()),
+  };
+
+  const mockGuard = {
+    canActivate: jest.fn(),
+  };
+  const mockService = {
+    validateUser: jest.fn(),
+    register: jest.fn(),
+  };
+
+  const mockUser = { id: 1, email: 'test@gmail.com', password: '123456' };
 
   jest.spyOn(bcrypt, 'hash').mockImplementation((pass) => pass);
+  jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -24,10 +40,12 @@ describe('AuthController (e2e)', () => {
     })
       .overrideProvider(PrismaService) // overriding PrismaService
       .useValue(mockPrisma)
-      .overrideGuard(AuthGuard('local')) // overriding JwtAuthGuard
-      .useValue({
-        canActivate: jest.fn(() => true), // mocking success authorization
-      })
+      .overrideGuard(AuthGuard('local')) // overriding local AuthGuard
+      .useValue(mockGuard)
+      .overrideProvider(JwtService) // overriding JwtService
+      .useValue(mockJwt)
+      .overrideProvider(AuthService) // overriding AuthService
+      .useValue(mockService)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -36,19 +54,20 @@ describe('AuthController (e2e)', () => {
   });
 
   it('/auth/register (POST) --> 201', () => {
-    const dto = { id: 1, email: 'test@gmail.com', password: '123456' };
+    mockService.register.mockResolvedValue(mockUser);
+
     mockPrisma.user.findUnique.mockResolvedValue(null);
     mockPrisma.user.create.mockResolvedValue({
-      id: dto.id,
-      email: dto.email,
+      id: mockUser.id,
+      email: mockUser.email,
     });
 
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ email: dto.email, password: dto.password })
+      .send({ email: mockUser.email, password: mockUser.password })
       .expect(201)
       .expect('Content-Type', /json/)
-      .expect({ id: dto.id, email: dto.email });
+      .expect({ id: mockUser.id, email: mockUser.email });
   });
 
   it('/auth/register (POST) --> 400 fails on validation', () => {
@@ -62,25 +81,37 @@ describe('AuthController (e2e)', () => {
   });
 
   it('/auth/register (POST) --> 500 fails while creating a new user', () => {
-    const dto = { id: 1, email: 'test@gmail.com', password: '123456' };
+    mockService.register.mockResolvedValue(null);
     mockPrisma.user.findUnique.mockResolvedValue(null);
     mockPrisma.user.create.mockResolvedValue(null);
 
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ email: dto.email, password: dto.password })
+      .send({ email: mockUser.email, password: mockUser.password })
       .expect(500)
       .expect('Content-Type', /json/);
   });
 
-  // it('/auth/login (POST)', () => {
-  //   mockPrisma.user.findUnique.mockResolvedValue({
-  //     id: '1',
-  //     email: 'test@gmail.com',
-  //   });
-  //   return request(app.getHttpServer())
-  //     .post('/auth/login')
-  //     .expect(201)
-  //     .expect({ id: 1, email: 'test@gmail.com' });
-  // });
+  it('/auth/login (POST) --> 201', () => {
+    mockService.validateUser.mockResolvedValue(mockUser);
+    mockGuard.canActivate.mockResolvedValue(true);
+    mockPrisma.user.findUnique.mockResolvedValue({
+      id: mockUser.id,
+      email: mockUser.email,
+    });
+
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: mockUser.email, password: mockUser.password })
+      .expect(201);
+  });
+
+  it('/auth/login (POST) --> 401', () => {
+    mockService.validateUser.mockResolvedValue(null);
+
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: mockUser.email, password: mockUser.password })
+      .expect(401);
+  });
 });
