@@ -1,4 +1,4 @@
-import { AuthService } from './../src/auth/auth.service';
+import { AuthService } from '../src/auth/auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

@@ -18,7 +18,6 @@ export class AuthInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<User>,
   ): Observable<any> | Promise<Observable<any>> {
-    console.log(context.getClass().name, 'name of class');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return next.handle().pipe(map(({ password, ...rest }) => rest));
   }
