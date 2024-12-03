@@ -4,18 +4,20 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("DB_URL")
 }
 
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique
   password String
+  todos    Todo[]
 }
 
 model Todo {
   id        Int     @id @default(autoincrement())
   title     String
   completed Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id])
   userId    Int
 }
