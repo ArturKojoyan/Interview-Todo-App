@@ -1,17 +1,29 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { User, type UserType } from 'src/user.decorator';
 import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LocalGuard } from './guards/local.guard';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
+  @UseInterceptors(AuthInterceptor)
   @Post('register')
-  async register(@Body() body: { email: string; password: string }) {
+  async register(@Body() body: RegisterDto) {
     return this.authService.register(body.email, body.password);
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
-    return this.authService.login(body.email, body.password);
+  @UseGuards(LocalGuard)
+  async login(@User() user: UserType) {
+    return user;
   }
 }
